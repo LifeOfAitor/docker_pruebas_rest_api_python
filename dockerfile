@@ -7,17 +7,23 @@ RUN apk add --no-cache gcc musl-dev libffi-dev
 # Directorio de trabajo
 WORKDIR /app
 
-# Copiar los requirements e instalar
+# Copiar los requirements e instalar dependencias
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar tu archivo main.py
+# Copiar el código fuente
 COPY main.py .
 
-# Exponer puerto
+# Exponer el puerto (FastAPI suele usar 8000)
 EXPOSE 8000
-EXPOSE 5000
+
+# Crear usuario no root (opcional pero recomendado)
+RUN adduser -D appuser
+USER appuser
 
 # Ejecutar FastAPI con uvicorn
-CMD ["uvicorn", "main:app",  "--port", "8000"]
-#CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+#para que funcione:
+    # docker build -t mirestapi:v1 .
+    # docker run -d -p 8000:8000 --name restApi mirestapi:v1
