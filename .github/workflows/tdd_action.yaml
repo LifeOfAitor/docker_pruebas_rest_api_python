@@ -1,7 +1,9 @@
 name: tdd_action
 
 on: 
-  push:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   ejecutar_tests:
