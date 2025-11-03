@@ -1,0 +1,11 @@
+name: Dockerhub_cd
+
+on:
+  push:
+
+jobs:
+  secrets:
+    runs on: ubuntu-latest
+    steps:
+      - name: echo a secrets
+        run: echo "${{secrets.DOCKERHUB_USER}}"
