@@ -2,7 +2,8 @@ name: Dockerhub_cd
 
 on:
   push:
-
+    branches:
+      - main
 jobs:
   push_dockerhub:
     runs-on: ubuntu-latest
