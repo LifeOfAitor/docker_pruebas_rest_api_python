@@ -2,13 +2,16 @@ name: Dockerhub_cd
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 jobs:
   push_dockerhub:
     runs-on: ubuntu-latest
 
     steps:
+    # Poner la variable de entorno para el tag del release
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     # Paso 1: Hacer checkout del código
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -24,4 +27,17 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USER }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+          tags: ${{ secrets.DOCKERHUB_USER }}/${{ secrets.DOCKERHUB_REPOSITORY }}:${{ env.RELEASE_VERSION }}
+    # Paso 4: Conectar por ssh al EC2
+      - name: ssh
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        with:
+          host: ${{ secrets.AWS_IP }}
+          user: "ubuntu"
+          key: ${{ secrets.AWS_KEY }}
+          connect_timeout: 10s
+          first_ssh: |
+            sudo docker stop restapiProyecto
+            sudo docker rm restapiProyecto
+            sudo docker rmi lifeofaitor/restapi_python:*
+            sudo docker run -d --name restapiProyecto -p 8000:8000 lifeofaitor/restapi_python:latest
