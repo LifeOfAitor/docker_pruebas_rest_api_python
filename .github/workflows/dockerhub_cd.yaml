@@ -30,7 +30,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USER }}/${{ secrets.DOCKERHUB_REPOSITORY }}:${{ env.RELEASE_VERSION }}
     # Paso 4: Conectar por ssh al EC2
       - name: ssh
-        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+        uses: yitianyigexiangfa/ssh-scp-ssh-pipelines@v1.1.5
         with:
           host: ${{ secrets.AWS_IP }}
           user: "ubuntu"
@@ -39,5 +39,4 @@ jobs:
           first_ssh: |
             sudo docker stop restapiProyecto
             sudo docker rm restapiProyecto
-            sudo docker rmi lifeofaitor/restapi_python:*
-            sudo docker run -d --name restapiProyecto -p 8000:8000 lifeofaitor/restapi_python:latest
+            sudo docker run -d --name restapiProyecto -p 8000:8000 lifeofaitor/restapi_python:${{ env.RELEASE_VERSION }}
