@@ -17,7 +17,7 @@ items_db = []
 @app.get("/")
 def leer_root():
     tutorial = {
-        "mensaje": "¡API funcionando!",
+        "mensaje": "¡API funcionando! version 2",
         "tutorial": {
             "GET /items": "Lista todos los items. Puedes filtrar por nombre con el parámetro 'nombre'.",
             "GET /items/{item_id}": "Obtiene un item específico por su ID.",
